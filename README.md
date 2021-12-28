@@ -1,1 +1,1 @@
-# density: flow-based density estimation
+# denmarf: Density EstimatioN using Masked AutoRegressive Flow
