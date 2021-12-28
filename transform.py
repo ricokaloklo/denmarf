@@ -1,0 +1,46 @@
+import numpy as np
+
+class LogitTransform():
+    def __init__(self, lower_bounds=None, upper_bounds=None):
+        if lower_bounds is not None and upper_bounds is not None:
+            self.rescaled = True
+            self.lower_bounds = lower_bounds
+            self.upper_bounds = upper_bounds
+        else:
+            self.rescaled = False
+
+    @staticmethod
+    def rescale(x, lower_bounds, upper_bounds):
+        x = np.asarray(x)
+        return (x - lower_bounds)/(upper_bounds-lower_bounds)
+
+    @staticmethod
+    def inverse_rescale(x, lower_bounds, upper_bounds):
+        x = np.asarray(x)
+        return (upper_bounds-lower_bounds)*x + lower_bounds
+
+    def logit_transform(self, x):
+        x = np.asarray(x)
+        if self.rescaled:
+            # Rescale to (0, 1)
+            x = self.rescale(x, self.lower_bounds, self.upper_bounds)
+        logit_x = -np.log(1./x - 1.)
+        return logit_x
+
+    def inverse_logit_transform(self, logit_x):
+        logit_x = np.asarray(logit_x)
+        x = 1./(1.+np.exp(-logit_x))
+        if self.rescaled:
+            x = self.inverse_rescale(x, self.lower_bounds, self.upper_bounds)
+        return x
+
+    def log_jacobian(self, x):
+        lj = 0.
+
+        if self.rescaled:
+            p = self.rescale(x, self.lower_bounds, self.upper_bounds)
+            lj -= np.log(self.upper_bounds - self.lower_bounds)
+        
+        lj -= np.log(p*(1.-p))
+
+        return lj
