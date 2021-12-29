@@ -26,6 +26,8 @@ class DensityEstimate():
                 self.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
             else:
                 self.device = torch.device(device)
+        else:
+            self.device = torch.device(device)
 
         if seed is not None:
             # Calling this will take care of everything
@@ -62,6 +64,7 @@ class DensityEstimate():
 
         num_features = X.shape[1]
         assert num_features > 1, "MADE does not work for 1D case"
+
         # Split the data set into training set, validation set and test set
         N_train = int(X.shape[0]*p_train)
         N_test = int(X.shape[0]*p_test)
@@ -157,14 +160,18 @@ class DensityEstimate():
             train(epoch)
             validation_loss = validate(epoch, model, validate_dataloader)
 
+            if verbose:
+                print("average likelihood: {:.3f}".format(-validation_loss))
+
             if validation_loss < best_validation_loss:
                 best_validation_epoch = epoch
                 best_validation_loss = validation_loss
                 best_model = copy.deepcopy(model)
 
         best_validation_loss = validate(best_validation_epoch, best_model, test_dataloader)
-
-        self.model = model
+        if verbose:
+            print("best average likelihood: {:.3f}".format(-best_validation_loss))
+        self.model = best_model
 
     def save(self, filename="density_estimate.pickle"):
         # Move the model to cpu first before saving
@@ -198,7 +205,10 @@ class DensityEstimate():
     def score_samples(self, X):
         assert len(X.shape) == 2, "X must be of shape (n_samples, n_features)"
 
-        logpdf = self.model.log_probs(X)
+        X_torch = torch.from_numpy(X.astype(np.float64))
+        X_torch.to(self.device)
+
+        logpdf = self.model.log_probs(X_torch).cpu().numpy()
 
         if self.bounded:
             # Compute the log jacobian from the logit transformation
