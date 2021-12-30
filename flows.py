@@ -491,7 +491,7 @@ class FlowSequential(nn.Sequential):
         u, log_jacob = self(inputs, cond_inputs)
         log_probs = (-0.5 * u.pow(2) - 0.5 * math.log(2 * math.pi)).sum(
             -1, keepdim=True)
-        return (log_probs + log_jacob).sum(-1, keepdim=True)
+        return torch.squeeze(log_probs) + torch.squeeze(log_jacob)
 
     def sample(self, num_samples=None, noise=None, cond_inputs=None):
         if noise is None:
