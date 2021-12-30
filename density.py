@@ -153,15 +153,15 @@ class DensityEstimate():
         best_validation_epoch = 0
         best_model = model
 
-        iterator = range(num_epochs)
         if verbose:
-            iterator = tqdm.tqdm(iterator)
-        for epoch in iterator:
+            pbar = tqdm.tqdm(total=num_epochs)
+        for epoch in range(num_epochs):
             train(epoch)
             validation_loss = validate(epoch, model, validate_dataloader)
 
             if verbose:
-                print("average likelihood: {:.3f}".format(-validation_loss))
+                pbar.update()
+                pbar.set_description("average log likelihood: {:.3f}".format(-validation_loss))
 
             if validation_loss < best_validation_loss:
                 best_validation_epoch = epoch
@@ -170,7 +170,7 @@ class DensityEstimate():
 
         best_validation_loss = validate(best_validation_epoch, best_model, test_dataloader)
         if verbose:
-            print("best average likelihood: {:.3f}".format(-best_validation_loss))
+            print("best average log likelihood: {:.3f}".format(-best_validation_loss))
         self.model = best_model
 
     def save(self, filename="density_estimate.pickle"):
@@ -204,16 +204,17 @@ class DensityEstimate():
 
     def score_samples(self, X):
         assert len(X.shape) == 2, "X must be of shape (n_samples, n_features)"
-
-        X_torch = torch.from_numpy(X.astype(np.float64))
-        X_torch.to(self.device)
-
-        logpdf = self.model.log_probs(X_torch).cpu().numpy()
+        logpdf = np.zeros(X.shape[0])
 
         if self.bounded:
-            # Compute the log jacobian from the logit transformation
+            # First compute the log jacobian from logit transformation
             logpdf += self.transformation.log_jacobian(X)
+            # Then perform the transformation
+            X = self.transformation.logit_transform(X)
+        
+        X_torch = torch.from_numpy(X.astype(np.float64)).to(self.device)
 
+        logpdf += self.model.log_probs(X_torch).detach().cpu().numpy()
         return logpdf
 
     def score(self, X):

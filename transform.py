@@ -35,12 +35,12 @@ class LogitTransform():
         return x
 
     def log_jacobian(self, x):
-        lj = 0.
+        lj = np.zeros(x.shape[0])
 
         if self.rescaled:
             p = self.rescale(x, self.lower_bounds, self.upper_bounds)
-            lj -= np.log(self.upper_bounds - self.lower_bounds)
+            lj -= np.ones(x.shape[0])*np.sum(np.log(self.upper_bounds - self.lower_bounds))
         
-        lj -= np.log(p*(1.-p))
+        lj -= np.sum(np.log(p*(1.-p)), axis=1)
 
         return lj
