@@ -180,6 +180,9 @@ class DensityEstimate():
         with open(filename, "wb") as f:
             pickle.dump(self, f)
 
+        # Move back to the original device
+        self.model.to(self.device)
+
     @classmethod
     def from_file(
             cls,
