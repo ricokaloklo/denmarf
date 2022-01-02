@@ -4,7 +4,7 @@ import pickle
 import tqdm
 
 import torch
-torch.set_default_dtype(torch.float64)
+torch.set_default_dtype(torch.float32)
 import torch.nn as nn
 import torch.utils.data as data
 import torch.optim as optim
@@ -70,7 +70,7 @@ class DensityEstimate():
         N_test = int(X.shape[0]*p_test)
         N_validate = int(X.shape[0]) - (N_train+N_test)
 
-        X = data.TensorDataset(torch.from_numpy(X.astype(np.float64)))
+        X = data.TensorDataset(torch.from_numpy(X.astype(np.float32)))
         train_dataset, validate_dataset, test_dataset = data.random_split(X, (N_train, N_validate, N_test))
 
         train_dataloader = data.DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
@@ -161,7 +161,7 @@ class DensityEstimate():
 
             if verbose:
                 pbar.update()
-                pbar.set_description("average log likelihood: {:.3f}".format(-validation_loss))
+                pbar.set_description("current average log likelihood: {:.3f}".format(-validation_loss))
 
             if validation_loss < best_validation_loss:
                 best_validation_epoch = epoch
@@ -209,14 +209,13 @@ class DensityEstimate():
         assert len(X.shape) == 2, "X must be of shape (n_samples, n_features)"
         logpdf = np.zeros(X.shape[0])
 
-        
         if self.bounded:
             # First compute the log jacobian from logit transformation
             # logpdf += self.transformation.log_jacobian(X)
             # Then perform the transformation
             X = self.transformation.logit_transform(X)
         
-        X_torch = torch.from_numpy(X.astype(np.float64)).to(self.device)
+        X_torch = torch.from_numpy(X.astype(np.float32)).to(self.device)
 
         logpdf += self.model.log_probs(X_torch).detach().cpu().numpy()
         return logpdf
@@ -229,7 +228,7 @@ class DensityEstimate():
 
         # NOTE: always return samples to CPU
         with torch.no_grad():
-            generated_samples = self.model.sample(n_samples).detach().cpu().numpy()
+            generated_samples = self.model.sample(n_samples).detach().cpu().numpy().astype(np.float64)
 
         if self.bounded:
             # Perform inverse transform

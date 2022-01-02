@@ -25,7 +25,7 @@ class LogitTransform():
         if self.rescaled:
             # Rescale to (0, 1)
             x = self.rescale(x, self.lower_bounds, self.upper_bounds)
-        logit_x = -np.log(1./x - 1.)
+        logit_x = np.log(x) - np.log1p(-x)
         return logit_x
 
     def inverse_logit_transform(self, logit_x):
