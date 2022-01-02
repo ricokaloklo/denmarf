@@ -4,8 +4,9 @@ class LogitTransform():
     def __init__(self, lower_bounds=None, upper_bounds=None):
         if lower_bounds is not None and upper_bounds is not None:
             self.rescaled = True
-            self.lower_bounds = lower_bounds
-            self.upper_bounds = upper_bounds
+            _OFFSET = 0
+            self.lower_bounds = lower_bounds - _OFFSET
+            self.upper_bounds = upper_bounds + _OFFSET
         else:
             self.rescaled = False
 
@@ -41,6 +42,6 @@ class LogitTransform():
             p = self.rescale(x, self.lower_bounds, self.upper_bounds)
             lj -= np.ones(x.shape[0])*np.sum(np.log(self.upper_bounds - self.lower_bounds))
         
-        lj -= np.sum(np.log(p*(1.-p)), axis=1)
+        lj -= np.sum(np.log(p) + np.log1p(-p), axis=1)
 
         return lj
