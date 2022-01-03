@@ -8,8 +8,9 @@ torch.set_default_dtype(torch.float32)
 import torch.nn as nn
 import torch.utils.data as data
 import torch.optim as optim
-import flows as fnn
-from transform import LogitTransform
+
+from . import flows as fnn
+from .transform import LogitTransform
 
 # An almost drop-in replacement of scikit-learn KernelDensity using MAF
 class DensityEstimate():
