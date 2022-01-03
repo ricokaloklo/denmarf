@@ -208,6 +208,7 @@ class DensityEstimate():
     def score_samples(self, X):
         assert len(X.shape) == 2, "X must be of shape (n_samples, n_features)"
         logpdf = np.zeros(X.shape[0])
+        X = X.astype(np.float32)
 
         if self.bounded:
             # First compute the log jacobian from logit transformation
@@ -215,7 +216,7 @@ class DensityEstimate():
             # Then perform the transformation
             X = self.transformation.logit_transform(X)
         
-        X_torch = torch.from_numpy(X.astype(np.float32)).to(self.device)
+        X_torch = torch.from_numpy(X).to(self.device)
 
         logpdf += self.model.log_probs(X_torch).detach().cpu().numpy()
         return logpdf
@@ -228,10 +229,14 @@ class DensityEstimate():
 
         # NOTE: always return samples to CPU
         with torch.no_grad():
-            generated_samples = self.model.sample(n_samples).detach().cpu().numpy().astype(np.float64)
+            generated_samples = self.model.sample(n_samples).detach().cpu().numpy().astype(np.float32)
 
         if self.bounded:
             # Perform inverse transform
             generated_samples = self.transformation.inverse_logit_transform(generated_samples)
+
+            # Replace inf and -inf with proper values
+            generated_samples = np.where(generated_samples == np.inf, self.transformation.upper_bounds, generated_samples)
+            generated_samples = np.where(generated_samples == -np.inf, self.transformation.lower_bounds, generated_samples)
 
         return generated_samples
