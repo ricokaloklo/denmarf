@@ -36,6 +36,30 @@ class DensityEstimate():
         self.model = None
         self.bounded = bounded
 
+    @staticmethod
+    def construct_model(
+        num_features,
+        num_blocks,
+        num_hidden,
+    ):
+        # Build the pytorch model
+        modules = []
+        for _ in range(num_blocks):
+            modules += [
+                fnn.MADE(num_features, num_hidden, None, act="tanh"),
+                fnn.BatchNormFlow(num_features),
+                fnn.Reverse(num_features)
+            ]
+        model = fnn.FlowSequential(*modules)
+
+        for module in model.modules():
+            if isinstance(module, nn.Linear):
+                nn.init.orthogonal_(module.weight)
+                if hasattr(module, 'bias') and module.bias is not None:
+                    module.bias.data.fill_(0)
+
+        return model
+
     def fit(
         self,
         X,
@@ -77,22 +101,10 @@ class DensityEstimate():
         validate_dataloader = data.DataLoader(validate_dataset, batch_size=batch_size, shuffle=False)
         test_dataloader = data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
-        # Build the pytorch model
-        modules = []
-        for _ in range(num_blocks):
-            modules += [
-                fnn.MADE(num_features, num_hidden, None, act="tanh"),
-                fnn.BatchNormFlow(num_features),
-                fnn.Reverse(num_features)
-            ]
-        model = fnn.FlowSequential(*modules)
-
-        for module in model.modules():
-            if isinstance(module, nn.Linear):
-                nn.init.orthogonal_(module.weight)
-                if hasattr(module, 'bias') and module.bias is not None:
-                    module.bias.data.fill_(0)
-
+        self.num_features = num_features
+        self.num_blocks = num_blocks
+        self.num_hidden = num_hidden
+        model = self.construct_model(self.num_features, self.num_blocks, self.num_hidden)
         model.to(self.device)
 
         # Optimizer
@@ -174,14 +186,15 @@ class DensityEstimate():
         self.model = best_model
 
     def save(self, filename="density_estimate.pickle"):
-        # Move the model to cpu first before saving
-        self.model.to(torch.device("cpu"))
+        # Save the model on cpu
+        self.state_dict_cpu = {k: self.model.state_dict()[k].cpu() for k in self.model.state_dict()}
+
+        tmp_model = copy.deepcopy(self.model)
+        del self.model
 
         with open(filename, "wb") as f:
             pickle.dump(self, f)
-
-        # Move back to the original device
-        self.model.to(self.device)
+        self.model = tmp_model
 
     @classmethod
     def from_file(
@@ -199,7 +212,13 @@ class DensityEstimate():
             use_cuda=use_cuda,
             bounded=saved_model.bounded,
         )
-        reconstructed.model = saved_model.model
+        reconstructed.model = DensityEstimate.construct_model(
+            saved_model.num_features,
+            saved_model.num_blocks,
+            saved_model.num_hidden,
+        )
+        reconstructed.model.load_state_dict(saved_model.state_dict_cpu)
+        reconstructed.model.num_inputs = saved_model.num_features
         reconstructed.model.to(reconstructed.device)
         reconstructed.transformation = saved_model.transformation
 
