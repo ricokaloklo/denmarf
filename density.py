@@ -212,7 +212,7 @@ class DensityEstimate():
 
         if self.bounded:
             # First compute the log jacobian from logit transformation
-            # logpdf += self.transformation.log_jacobian(X)
+            logpdf += self.transformation.log_jacobian(X)
             # Then perform the transformation
             X = self.transformation.logit_transform(X)
         
