@@ -36,3 +36,14 @@ from denmarf.density import DensityEstimate
 
 de = DensityEstimate(device="cuda:2")
 ```
+
+### Fitting a bounded distribution
+To faciliate the fitting performance for bounded distributions, [logit transformations](https://en.wikipedia.org/wiki/Logit) can be used to convert bounded distributions to unbound ones. `denmarf` will automatically perform both the linear shifting and rescaling, as well as the actual logit transformation if the argument `bounded` is set when initializing the model, and if the lower and upper bounds are given when calling `.fit()`. When computing the probability density, the appropriate Jacobian is also computed.
+
+For example,
+```python
+from denmarf.density import DensityEstimate
+
+# X is some np ndarray
+de = DensityEstimate(bounded=True).fit(X, lower_bounds=..., upper_bounds=...)
+```
