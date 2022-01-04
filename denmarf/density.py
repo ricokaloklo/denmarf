@@ -186,6 +186,8 @@ class DensityEstimate():
             print("best average log likelihood: {:.3f}".format(-best_validation_loss))
         self.model = best_model
 
+        return self
+
     def save(self, filename="density_estimate.pickle"):
         # Save the model on cpu
         self.state_dict_cpu = {k: self.model.state_dict()[k].cpu() for k in self.model.state_dict()}
