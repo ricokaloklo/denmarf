@@ -233,14 +233,24 @@ class DensityEstimate():
         X = X.astype(np.float32)
 
         if self.bounded:
+            # Check if X is within the bounds
+            valid_indices_lower_bounds = np.less_equal(
+                self.transformation.lower_bounds,
+                X
+            ).all(axis=1)
+            valid_indices_upper_bounds = np.less(
+                X,
+                self.transformation.upper_bounds,
+            ).all(axis=1)
+            logpdf = np.where(valid_indices_lower_bounds & valid_indices_upper_bounds, logpdf, -np.inf)
             # First compute the log jacobian from logit transformation
             logpdf += self.transformation.log_jacobian(X)
             # Then perform the transformation
             X = self.transformation.logit_transform(X)
         
         X_torch = torch.from_numpy(X).to(self.device)
-
         logpdf += self.model.log_probs(X_torch).detach().cpu().numpy()
+
         return logpdf
 
     def score(self, X):
