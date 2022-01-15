@@ -11,6 +11,7 @@ import torch.optim as optim
 
 from . import flows as fnn
 from .transform import LogitTransform
+from .utils import determine_device
 
 # An almost drop-in replacement of scikit-learn KernelDensity using MAF
 class DensityEstimate():
@@ -21,14 +22,7 @@ class DensityEstimate():
         use_cuda=True,
         bounded=False,
     ):
-        if use_cuda:
-            if device == "cpu":
-                # GPU not specified, use the first one if available
-                self.device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
-            else:
-                self.device = torch.device(device)
-        else:
-            self.device = torch.device(device)
+        self.device = determine_device(device, use_cuda)
 
         if seed is not None:
             # Calling this will take care of everything
@@ -189,43 +183,18 @@ class DensityEstimate():
         return self
 
     def save(self, filename="density_estimate.pickle"):
-        # Save the model on cpu
-        self.state_dict_cpu = {k: self.model.state_dict()[k].cpu() for k in self.model.state_dict()}
+        torch.save(self, filename)
 
-        tmp_model = copy.deepcopy(self.model)
-        del self.model
-
-        with open(filename, "wb") as f:
-            pickle.dump(self, f)
-        self.model = tmp_model
-
-    @classmethod
+    @staticmethod
     def from_file(
-            cls,
             filename="density_estimate.pickle",
             device="cpu",
             use_cuda=True,
         ):
-        
-        with open(filename, "rb") as f:
-            saved_model = pickle.load(f)
-
-        reconstructed = cls(
-            device=device,
-            use_cuda=use_cuda,
-            bounded=saved_model.bounded,
-        )
-        reconstructed.model = DensityEstimate.construct_model(
-            saved_model.num_features,
-            saved_model.num_blocks,
-            saved_model.num_hidden,
-        )
-        reconstructed.model.load_state_dict(saved_model.state_dict_cpu)
-        reconstructed.model.num_inputs = saved_model.num_features
-        reconstructed.model.to(reconstructed.device)
-        reconstructed.transformation = saved_model.transformation
-
-        return reconstructed
+        pytorch_device = determine_device(device, use_cuda)
+        de = torch.load(filename, map_location=pytorch_device)
+        de.device = pytorch_device
+        return de
 
     def score_samples(self, X):
         assert len(X.shape) == 2, "X must be of shape (n_samples, n_features)"
