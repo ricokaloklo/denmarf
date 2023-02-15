@@ -26,13 +26,13 @@ de = DensityEstimate()
 ```
 Note that by default the model will try to use GPU whenever CUDA is available, and revert back to CPU if not available. To by-pass this behavior and use CPU even when GPU is available, use
 ```python
-from denmarf.density import DensityEstimate
+from denmarf import DensityEstimate
 
 de = DensityEstimate(device="cpu", use_cuda=False)
 ```
 If multiple GPUs are available, one can specify which device to use by
 ```python
-from denmarf.density import DensityEstimate
+from denmarf import DensityEstimate
 
 de = DensityEstimate(device="cuda:2")
 ```
@@ -42,7 +42,7 @@ To faciliate the fitting performance for bounded distributions, [logit transform
 
 For example,
 ```python
-from denmarf.density import DensityEstimate
+from denmarf import DensityEstimate
 
 # X is some np ndarray
 de = DensityEstimate().fit(X, bounded=True, lower_bounds=..., upper_bounds=...)
@@ -56,6 +56,8 @@ de.save("filename_for_the_model.pkl")
 ### Loading a saved model from disk
 `denmarf` has built-in support for loading a trained model saved to disk and reconstructing the model either to CPU or GPU (does not have to be the same architecture where the training was performed!). For example, let us say we have a model trained on a GPU and we want to evaluate the model on a CPU instead. This can be done by using
 ```python
+from denmarf import DensityEstimate
+
 de = DensityEstimate.from_file(filename="filename_for_the_model.pkl")
 ```
 The default behavior is always loading the model to CPU.
