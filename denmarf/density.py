@@ -66,13 +66,17 @@ class DensityEstimate():
         num_epochs=1000,
         learning_rate=1e-3,
         weight_decay=1e-6,
-        batch_size=1,
+        batch_size=None,
         p_train=0.5,
         p_test=0.1,
         verbose=True,
     ):
         X = np.asarray(X)
         assert len(X.shape) == 2, "X must be of shape (n_samples, n_features)"
+
+        # Set batch_size to something reasonable, maybe splitting the training samples into 10 sets?
+        if batch_size is None:
+            batch_size = int(0.1*X.shape[0])
 
         # For compatibility with older version
         # Deprecation notice: the bounded option will be moved to .fit() in newer versions
