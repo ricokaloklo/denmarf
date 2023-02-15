@@ -8,4 +8,8 @@ setup(name='denmarf',
       author='Rico Ka Lok Lo',
       author_email='rico.kaloklo@gmail.com',
       packages=['denmarf'],
+      install_requires=[
+            'torch',
+            'getdist',
+      ],
 )
