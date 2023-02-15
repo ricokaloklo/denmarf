@@ -58,6 +58,7 @@ class DensityEstimate():
     def fit(
         self,
         X,
+        bounded=None,
         lower_bounds=None,
         upper_bounds=None,
         num_blocks=32,
@@ -72,6 +73,11 @@ class DensityEstimate():
     ):
         X = np.asarray(X)
         assert len(X.shape) == 2, "X must be of shape (n_samples, n_features)"
+
+        # For compatibility with older version
+        # Deprecation notice: the bounded option will be moved to .fit() in newer versions
+        if bounded is not None:
+            self.bounded = bounded
 
         # Perform logit transformation if distribution is bounded
         if self.bounded:
