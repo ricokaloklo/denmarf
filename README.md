@@ -20,7 +20,7 @@ The interface is very similar to the [KernelDensity](https://scikit-learn.org/st
 ### Initializing a `DensityEstimate` object
 To initialize a `DensityEstimate` model, one can simply use
 ```python
-from denmarf.density import DensityEstimate
+from denmarf import DensityEstimate
 
 de = DensityEstimate()
 ```
@@ -45,5 +45,17 @@ For example,
 from denmarf.density import DensityEstimate
 
 # X is some np ndarray
-de = DensityEstimate(bounded=True).fit(X, lower_bounds=..., upper_bounds=...)
+de = DensityEstimate().fit(X, bounded=True, lower_bounds=..., upper_bounds=...)
 ```
+### Saving a trained model
+After training a model, it can be saved (pickled) to disk for later usage. This can be done by using
+```python
+de.save("filename_for_the_model.pkl")
+```
+
+### Loading a saved model from disk
+`denmarf` has built-in support for loading a trained model saved to disk and reconstructing the model either to CPU or GPU (does not have to be the same architecture where the training was performed!). For example, let us say we have a model trained on a GPU and we want to evaluate the model on a CPU instead. This can be done by using
+```python
+de = DensityEstimate.from_file(filename="filename_for_the_model.pkl")
+```
+The default behavior is always loading the model to CPU.
