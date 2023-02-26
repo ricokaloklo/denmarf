@@ -79,11 +79,12 @@ class MADE(nn.Module):
         self.joiner = nn.MaskedLinear(num_inputs, num_hidden, input_mask,
                                       num_cond_inputs)
 
-        self.trunk = nn.Sequential(act_func(),
-                                   nn.MaskedLinear(num_hidden, num_hidden,
-                                                   hidden_mask), act_func(),
-                                   nn.MaskedLinear(num_hidden, num_inputs * 2,
-                                                   output_mask))
+        self.trunk = nn.Sequential(
+            act_func(),
+            nn.MaskedLinear(num_hidden, num_hidden, hidden_mask),
+            act_func(),
+            nn.MaskedLinear(num_hidden, num_inputs * 2, output_mask),
+        )
 
     def forward(self, inputs, cond_inputs=None, mode='direct'):
         if mode == 'direct':
@@ -100,21 +101,6 @@ class MADE(nn.Module):
                 x[:, i_col] = inputs[:, i_col] * torch.exp(
                     a[:, i_col]) + m[:, i_col]
             return x, -a.sum(-1, keepdim=True)
-
-
-class Sigmoid(nn.Module):
-    def __init__(self):
-        super(Sigmoid, self).__init__()
-
-    def forward(self, inputs, cond_inputs=None, mode='direct'):
-        if mode == 'direct':
-            s = torch.sigmoid
-            return s(inputs), torch.log(s(inputs) * (1 - s(inputs))).sum(
-                -1, keepdim=True)
-        else:
-            return torch.log(inputs /
-                             (1 - inputs)), -torch.log(inputs - inputs**2).sum(
-                                 -1, keepdim=True)
 
 class BatchNormFlow(nn.Module):
     """ An implementation of a batch normalization layer from
