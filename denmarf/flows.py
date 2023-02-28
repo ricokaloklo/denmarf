@@ -100,7 +100,7 @@ class MADE(nn.Module):
                 m, a = self.trunk(h).chunk(2, 1)
                 x[:, i_col] = inputs[:, i_col] * torch.exp(
                     a[:, i_col]) + m[:, i_col]
-            return x, -a.sum(-1, keepdim=True)
+            return x, a.sum(-1, keepdim=True)
 
 class BatchNormFlow(nn.Module):
     """ An implementation of a batch normalization layer from
@@ -145,12 +145,8 @@ class BatchNormFlow(nn.Module):
             return y, (self.log_gamma - 0.5 * torch.log(var)).sum(
                 -1, keepdim=True)
         else:
-            if self.training:
-                mean = self.batch_mean
-                var = self.batch_var
-            else:
-                mean = self.running_mean
-                var = self.running_var
+            mean = self.running_mean
+            var = self.running_var
 
             x_hat = (inputs - self.beta) / torch.exp(self.log_gamma)
 
