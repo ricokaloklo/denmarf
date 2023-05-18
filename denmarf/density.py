@@ -109,7 +109,13 @@ class DensityEstimate():
         self.num_features = num_features
         self.num_blocks = num_blocks
         self.num_hidden = num_hidden
-        model = self.construct_model(self.num_features, self.num_blocks, self.num_hidden)
+
+        if self.model is None:
+            # Construct a new model
+            model = self.construct_model(self.num_features, self.num_blocks, self.num_hidden)
+        else:
+            # Resume from previously saved model
+            model = self.model
         model.to(self.device)
 
         # Optimizer
