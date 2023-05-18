@@ -14,7 +14,7 @@ This package is basically a wrapper for [pytorch-flow](https://github.com/ikostr
 
 ## Installation
 ```
-pip install denmaf
+pip install denmarf
 ```
 
 ## Usage
