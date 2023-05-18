@@ -5,7 +5,7 @@ Density EstimatioN using Masked AutoRegressive Flow
 <img src="https://user-images.githubusercontent.com/55488840/219470588-de21e355-2e45-4bfc-913c-37d7c625951e.png" width="500">
 
 
-This package is basically a wrapper for [pytorch-flow](https://github.com/ikostrikov/pytorch-flows) that provides a sklearn-like interface to use pytorch to perform density estimation.
+This package provides a `scikit-learn`-like interface to perform density estimation using [masked autoregressive flow](https://arxiv.org/abs/1705.07057). The current `torch`-based implementation uses [pytorch-flow](https://github.com/ikostrikov/pytorch-flows) as the backbone.
 
 ## Requirements
 - scipy-stack (numpy, scipy, matplotlib, pandas)
