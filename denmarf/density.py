@@ -22,6 +22,21 @@ class DensityEstimate():
         use_cuda=True,
         bounded=False,
     ):
+        """Initialize the density estimate.
+        
+        Parameters
+        ----------
+        seed : int, optional
+            Random seed.
+        device : str, optional
+            Device to be used. Can be "cpu", "cuda", or "{cpu/cuda}:{device ordinal}".
+        use_cuda : bool, optional
+            Whether to use CUDA if available.
+        bounded : bool, optional
+            Whether the distribution is bounded. If True, the distribution will be transformed to the unbounded space
+            using logistic transformation.
+        
+        """
         self.device = determine_device(device, use_cuda)
 
         if seed is not None:
@@ -37,6 +52,23 @@ class DensityEstimate():
         num_blocks,
         num_hidden,
     ):
+        """Construct the pytorch model.
+
+        Parameters
+        ----------
+        num_features : int
+            Number of features.
+        num_blocks : int
+            Number of blocks.
+        num_hidden : int
+            Number of hidden units.
+
+        Returns
+        -------
+        model : torch.nn.Module
+            Pytorch model.
+
+        """
         # Build the pytorch model
         modules = []
         for _ in range(num_blocks):
@@ -71,6 +103,39 @@ class DensityEstimate():
         p_test=0.1,
         verbose=True,
     ):
+        """Fit the density estimate to the data.
+        
+        Parameters
+        ----------
+        X : numpy.ndarray
+            Training samples.
+        bounded : bool, optional
+            Whether the distribution is bounded. If True, the distribution will be transformed to the unbounded space
+            using logistic transformation.
+        lower_bounds : numpy.ndarray, optional
+            Lower bounds of the bounded distribution.
+        upper_bounds : numpy.ndarray, optional
+            Upper bounds of the bounded distribution.
+        num_blocks : int, optional
+            Number of blocks.
+        num_hidden : int, optional
+            Number of hidden units.
+        num_epochs : int, optional
+            Number of epochs.
+        learning_rate : float, optional
+            Learning rate.
+        weight_decay : float, optional
+            Weight decay.
+        batch_size : int, optional
+            Batch size.
+        p_train : float, optional
+            Percentage (0 < p_train < 1.0) of training samples.
+        p_test : float, optional
+            Percentage (0 < p_test < 1.0) of test samples. The rest of the samples will be used for validation.
+        verbose : bool, optional
+            Whether to print progress.
+
+        """
         X = np.asarray(X)
         assert len(X.shape) == 2, "X must be of shape (n_samples, n_features)"
 
@@ -199,6 +264,14 @@ class DensityEstimate():
         return self
 
     def save(self, filename="density_estimate.pickle"):
+        """Save the density estimate to a file.
+        
+        Parameters
+        ----------
+        filename : str
+            Filename to save the density estimate to.
+        
+        """
         torch.save(self, filename)
 
     @staticmethod
@@ -207,12 +280,43 @@ class DensityEstimate():
             device="cpu",
             use_cuda=True,
         ):
+        """Load a density estimate from a file.
+
+        Parameters
+        ----------
+        filename : str
+            Filename to load the density estimate from.
+        device : str
+            Device to load the density estimate to. Does not have
+            to be the same architecture as the one used to train the model.
+        use_cuda : bool
+            Whether to use CUDA.
+        
+        Returns
+        -------
+        density_estimate : DensityEstimate
+            The loaded density estimate.
+
+        """
         pytorch_device = determine_device(device, use_cuda)
         de = torch.load(filename, map_location=pytorch_device)
         de.device = pytorch_device
         return de
 
     def score_samples(self, X):
+        """Compute the log likelihood of each sample in X.
+        
+        Parameters
+        ----------
+        X : array-like, shape (n_samples, n_features)
+            Samples to compute the log likelihood for.
+            
+        Returns
+        -------
+        log_likelihoods : array-like, shape (n_samples,)
+            Log likelihoods of each sample in X.
+            
+        """
         assert len(X.shape) == 2, "X must be of shape (n_samples, n_features)"
         logpdf = np.zeros(X.shape[0])
         X = X.astype(np.float32)
@@ -239,9 +343,35 @@ class DensityEstimate():
         return logpdf
 
     def score(self, X):
+        """Compute the total log likelihood of samples in X.
+
+        Parameters
+        ----------
+        X : array-like, shape (n_samples, n_features)
+            Samples to compute the log likelihood for.
+
+        Returns
+        -------
+        log_likelihood : float
+            Total log likelihood of samples in X.
+
+        """
         return np.sum(self.score_samples(X))
 
     def sample(self, n_samples=1):
+        """Sample from the density estimate.
+
+        Parameters
+        ----------
+        n_samples : int
+            Number of samples to generate.
+
+        Returns
+        -------
+        samples : array-like, shape (n_samples, n_features)
+            Samples from the density estimate.
+
+        """
         self.model.eval()
 
         # NOTE: always return samples to CPU
