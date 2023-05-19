@@ -20,7 +20,6 @@ author = 'Rico Ka Lok Lo'
 extensions = [
     'sphinx_rtd_theme',
     'sphinx.ext.napoleon',
-    'myst_parser',
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
     'sphinx.ext.autodoc',
