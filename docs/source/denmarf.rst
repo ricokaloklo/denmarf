@@ -1,6 +1,11 @@
 denmarf package
 ===============
 
+.. automodule:: denmarf
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -32,14 +37,6 @@ denmarf.utils module
 --------------------
 
 .. automodule:: denmarf.utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: denmarf
    :members:
    :undoc-members:
    :show-inheritance:
