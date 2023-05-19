@@ -50,6 +50,7 @@ class Test2DGaussian(unittest.TestCase):
         # Load the previously saved model again (but this time on GPU if available)
         de = DensityEstimate.from_file(
             "2d_gaussian_test.pkl",
+            use_cuda=True,
         )
 
         # Generate some samples from the 2D Gaussian distribution
@@ -68,6 +69,7 @@ class Test2DGaussian(unittest.TestCase):
         # Load the previously saved model again and again (but this time on GPU if available)
         de = DensityEstimate.from_file(
             "2d_gaussian_test.pkl",
+            use_cuda=True,
         )
 
         # Generate some samples from the 2D Gaussian distribution

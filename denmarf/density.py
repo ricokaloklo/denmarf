@@ -278,7 +278,7 @@ class DensityEstimate():
     def from_file(
             filename="density_estimate.pickle",
             device="cpu",
-            use_cuda=True,
+            use_cuda=False,
         ):
         """Load a density estimate from a file.
 
