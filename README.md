@@ -5,7 +5,7 @@ Density EstimatioN using Masked AutoRegressive Flow
 <img src="https://user-images.githubusercontent.com/55488840/219470588-de21e355-2e45-4bfc-913c-37d7c625951e.png" width="500">
 
 ![license](https://img.shields.io/github/license/ricokaloklo/denmarf)
-[![GitHub release](https://img.shields.io/github/release/ricokaloklo/denmarf)](https://github.com/ricokaloklo/denmarf/releases)
+[![GitHub release](https://img.shields.io/github/v/release/ricokaloklo/denmarf.svg)](https://github.com/ricokaloklo/denmarf/releases)
 [![Documentation Status](https://readthedocs.org/projects/denmarf/badge/?version=latest)](https://denmarf.readthedocs.io/en/latest/?badge=latest)
 
 This package provides a `scikit-learn`-like interface to perform density estimation using [masked autoregressive flow](https://arxiv.org/abs/1705.07057). The current `torch`-based implementation uses [pytorch-flow](https://github.com/ikostrikov/pytorch-flows) as the backbone.
