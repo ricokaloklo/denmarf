@@ -71,7 +71,7 @@ The default behavior is always loading the model to CPU.
 
 Contribution is always welcome!
 
-You can use the issue tracker on [github](https://github.com/ricokaloklo/denmarf/issues) to submit a bug report, to request a new feature, or simply to ask a question about the code!
+You can use the [issue tracker on github](https://github.com/ricokaloklo/denmarf/issues) to submit a bug report, to request a new feature, or simply to ask a question about the code!
 
-If you would like to make changes to the code, just submit a pull request on [github](https://github.com/ricokaloklo/denmarf/pulls).
+If you would like to make changes to the code, just submit a [pull request on github](https://github.com/ricokaloklo/denmarf/pulls).
 
