@@ -13,6 +13,5 @@ setup(name='denmarf',
             'scipy',
             'tqdm',
             'torch',
-            'getdist',
       ],
 )
