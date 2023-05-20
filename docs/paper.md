@@ -1,7 +1,10 @@
 ---
-title: 'denmarf: density estimation using masked autoregressive flow'
+title: 'denmarf: a Python package for density estimation using masked autoregressive flow'
 tags:
   - Python
+  - statistics
+  - astronomy
+  - data analysis
 authors:
   - name: Rico K. L. Lo
     orcid: 0000-0003-1561-6716
@@ -18,8 +21,10 @@ bibliography: paper.bib
 
 Masked autoregressive flow [@NIPS2017_6c1da886] is a state-of-the-art non-parametric density estimation technique. 
 It is based on the idea (known as a normalizing flow) that a simple base probability distribution can be mapped into 
-a complicated target distribution that one wishes to approximate, using a sequence of bijective transformations [@cms/1266935020; @https://doi.org/10.1002/cpa.21423]. The `denmarf` package provides a `scikit-learn`-like interface for researchers to effortlessly and seamlessly 
-use masked autoregressive flow to evaluate probability densities of a set of data and generate new samples from the data, on either a CPU or a GPU.
+a complicated target distribution that one wishes to approximate, using a sequence of bijective transformations [@cms/1266935020; @https://doi.org/10.1002/cpa.21423]. The `denmarf` package provides a `scikit-learn`-like interface in Python for researchers
+to effortlessly use masked autoregressive flow for density estimation in their applications to evaluate probability densities of a set of data 
+and generate new samples from the data, on either a CPU or a GPU. The package also implements logistic transformations to facilitate 
+the fitting of bounded distributions.
 
 # Statement of need
 <!---
