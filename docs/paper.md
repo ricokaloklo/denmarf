@@ -16,7 +16,10 @@ bibliography: paper.bib
 
 # Summary
 
-Masked autoregressive flow [@NIPS2017_6c1da886] is a state-of-the-art non-parametric density estimation technique. It is based on the idea (known as normalizing flows) that a complicated distribution can be mapped back to a simple base probability distribution, which one knows how to easily calculate its probability density function and efficiently generate samples from, via a sequence of bijective transformations.
+Masked autoregressive flow [@NIPS2017_6c1da886] is a state-of-the-art non-parametric density estimation technique. 
+It is based on the idea (known as normalizing flows) that a complicated distribution can be mapped 
+back to a simple base probability distribution, which one knows how to easily calculate its probability density function 
+and efficiently generate samples from, via a sequence of bijective transformations [@cms/1266935020; @https://doi.org/10.1002/cpa.21423].
 
 # Statement of need
 
