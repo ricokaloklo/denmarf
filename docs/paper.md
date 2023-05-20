@@ -19,7 +19,11 @@ bibliography: paper.bib
 Masked autoregressive flow [@NIPS2017_6c1da886] is a state-of-the-art non-parametric density estimation technique. 
 It is based on the idea (known as normalizing flows) that a complicated distribution can be mapped 
 back to a simple base probability distribution, which one knows how to easily calculate its probability density function 
-and efficiently generate samples from, via a sequence of bijective transformations [@cms/1266935020; @https://doi.org/10.1002/cpa.21423].
+and efficiently generate samples from, via a sequence of bijective transformations [@cms/1266935020; @https://doi.org/10.1002/cpa.21423]. 
+While it is relatively straightforward to implement these with the help of deep learning libraries such as `PyTorch`, 
+the technical hurdles of leveraging these cutting-edge methods for people outside of the machine learning community that are not well-versed in those 
+libraries remain high. The `denmarf` package is designed to lower the technical barrier and enable researchers to apply masked autoregressive flow 
+for density estimation in their researches seamlessly by providing a `scikit-learn`-like interface.
 
 # Statement of need
 
