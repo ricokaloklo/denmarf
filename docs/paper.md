@@ -29,13 +29,21 @@ of the underlying distribution of a set of data and generate new samples from th
 # Statement of need
 
 There are a number of ways to perform density estimation in a non-parametric fashion, one of which is kernel density estimation (KDE). 
-Suppose we have a set of $D$-dimensional data of size $N$, $\left( \vec{x}_{1}, \vec{x}_{2}, \vec{x}_{i}, \dots, \vec{x}_{N} \right)$, i.e. $\vec{x}_{i}$ is a $D$-dimensional vector where $i \in \left[ 1, N \right]$, that follows the probability distribution $f(\vec{x})$. 
-The kernel density estimate $\hat{f}_{\rm KDE}$ using those data is given by 
+Suppose we have a set of $D$-dimensional data of size $N$, $\left( \vec{x}_{1}, \vec{x}_{2}, \dots, \vec{x}_{N} \right)$, i.e. $\vec{x}_{i}$ is a $D$-dimensional vector where $i \in \left[ 1, N \right]$ that follows the probability distribution $f(\vec{x})$ we wish to approximate. 
+The kernel density estimate $\hat{f}_{\rm KDE}$ using those input data is given by 
 \begin{equation}
+\label{eq:KDE}
   \hat{f}_{\rm KDE}(\vec{x}) = \dfrac{1}{N} \sum_{i=1}^{N} K(\vec{x} - \vec{x}_{i}),
 \end{equation}
 where $K$ is the kernel function that depends on the distance between the evaluation point $\vec{x}$ and the input data point $\vec{x}_{i}$.
-The cost of $M$ such evaluations (using a naive implementation) is therefore $O(MND)$. 
+The cost of $M$ such evaluations (using a naive implementation of Eq.~\cite{eq:KDE}) is therefore $O(MND)$. This can be slow if we need to evaluate the KDE 
+of a large data set (i.e. large $N$) many times (i.e. large $M$). (Give an example later on if word limit permits).
+
+However with MAF, a faster evaluation can be achieved. 
+\begin{equation}
+  \hat{f}_{\rm MAF}(\vec{x}) = u(T(\vec{x})|J_{T}(\vec{x})|,
+\end{equation}
+where $|J_{T}|$ is the Jacobian determinant of the mapping.
 
 <!---
 While it is relatively straightforward to implement these with the help of deep learning libraries such as `PyTorch`, 
