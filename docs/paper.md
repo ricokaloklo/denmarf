@@ -36,7 +36,7 @@ The kernel density estimate $\hat{f}_{\rm KDE}$ using those input data is given 
   \hat{f}_{\rm KDE}(\vec{x}) = \dfrac{1}{N} \sum_{i=1}^{N} K(\vec{x} - \vec{x}_{i}),
 \end{equation}
 where $K$ is the kernel function that depends on the distance between the evaluation point $\vec{x}$ and the input data point $\vec{x}_{i}$. 
-There are many implementations of KDE in Python, such as `scipy.stats.gaussian_kde` [@2020SciPy-NMeth], `sklearn.neighbors.kerneldensity` [@scikit-learn] and `kalepy` [@Kelley2021].
+There are many implementations of KDE in Python, such as `scipy.stats.gaussian_kde` [@2020SciPy-NMeth], `sklearn.neighbors.KernelDensity` [@scikit-learn] and `kalepy` [@Kelley2021].
 The cost of $M$ such evaluations using \autoref{eq:KDE} is therefore $O(MND)$. This can be slow if we need to evaluate the KDE of a large data set (i.e. large $N$) many times (i.e. large $M$). Give an example here if word limit permits.
 
 However with MAF, an evaluation of the estimated density is independent of $N$. Suppose $T(\vec{x})$ maps the target distribution $f(\vec{x})$ into the base distribution $u$, usually chosen as a $D$-dimensional standard normal distribution, then the density estimate using MAF $\hat{f}_{\rm MAF}$ is given by
@@ -50,9 +50,8 @@ We can see that the evaluation cost using KDE scales with $N$ while that using M
 
 While it is relatively straightforward to implement a routine to perform density estimation using MAF with the help of deep learning libraries such as `TensorFlow` [@tensorflow2015-whitepaper] and `PyTorch` [@paszke2017automatic],
 the technical hurdle of leveraging MAF for people not well-versed in those libraries remains high. 
-The `denmarf` package is designed to lower the technical barrier and enable researchers to apply MAF
-for density estimation in their researches seamlessly by providing a `scikit-learn`-like interface.
-
+The `denmarf` package is designed to be an almost drop-in replacement of the `sklearn.neighbors.KernelDensity` module 
+to lower the technical barrier and enable researchers to apply MAF for density estimation effortlessly.
 
 # Acknowledgements
 
