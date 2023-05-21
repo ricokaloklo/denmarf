@@ -60,5 +60,6 @@ New samples $\vec{x}_{i}$ can be generated from the approximated distribution by
 Indeed, if the transformations are bijective (i.e. both surjective and injective) then we can always find $\vec{x}_{i}$ such that $\vec{y}_{i} = T(\vec{x}_{i})$. This could potentially be a problem for input data $\vec{x}_{i}$ that are bounded, since in MAF $T$ is only rescaling and shifting (i.e. an affine transformation) and $u$ is usually a normal distribution which is unbounded. To solve this problem, `denmarf` will logit-transform the input data first if the underlying distribution should be bounded, and the logit-transformed data become unbounded. `denmarf` will automatically include the extra Jacobian from the logit transformation during density evaluations and perform inverse logit transformation after sample regenerations.
 
 # Acknowledgements
+The author would like to acknowledge support from National Science Foundation Awards No. PHY-1912594 and No. PHY-2207758. The author is also grateful for computational resources provided by the LIGO Laboratory and supported by NSF Grants No. PHY-0757058 and No. PHY-0823459. The current version of `denmarf` uses `pytorch-flows` as the backbone \autoref{ikostrikov}. 
 
 # References
