@@ -35,17 +35,18 @@ The kernel density estimate $\hat{f}_{\rm KDE}$ using those input data is given 
 \label{eq:KDE}
   \hat{f}_{\rm KDE}(\vec{x}) = \dfrac{1}{N} \sum_{i=1}^{N} K(\vec{x} - \vec{x}_{i}),
 \end{equation}
-where $K$ is the kernel function that depends on the distance between the evaluation point $\vec{x}$ and the input data point $\vec{x}_{i}$.
-The cost of $M$ such evaluations (e.g. using the implementation of \autoref{eq:KDE} in `scikit-learn`) is therefore $O(MND)$. This can be slow if we need to evaluate the KDE 
-of a large data set (i.e. large $N$) many times (i.e. large $M$). Give an example here if word limit permits.
+where $K$ is the kernel function that depends on the distance between the evaluation point $\vec{x}$ and the input data point $\vec{x}_{i}$. 
+There are many implementations of KDE in Python, such as `scipy.stats.gaussian_kde` [@2020SciPy-NMeth], `sklearn.neighbors.kerneldensity` [@scikit-learn] and `kalepy` [@Kelley2021].
+The cost of $M$ such evaluations using \autoref{eq:KDE} is therefore $O(MND)$. This can be slow if we need to evaluate the KDE of a large data set (i.e. large $N$) many times (i.e. large $M$). Give an example here if word limit permits.
 
 However with MAF, an evaluation of the estimated density is independent of $N$. Suppose $T(\vec{x})$ maps the target distribution $f(\vec{x})$ into the base distribution $u$, usually chosen as a $D$-dimensional standard normal distribution, then the density estimate using MAF $\hat{f}_{\rm MAF}$ is given by
 \begin{equation}
   \hat{f}_{\rm MAF}(\vec{x}) = u(T(\vec{x}))|J_{T}(\vec{x})|,
 \end{equation}
-where $|J_{T}|$ is the Jacobian determinant of the mapping, and note that there is no summation over the $N$ input data.
+where $|J_{T}|$ is the Jacobian determinant of the mapping, and note that there is no summation over the $N$ input data. \autoref{fig:timing} shows the computational cost for $M = 1000$ evaluations of the density estimate from data of size $N$ using KDE and that using MAF respectively. 
+We can see that the evaluation cost using KDE scales with $N$ while that using MAF is indeed independent of $N$.
 
-![Timing\label{fig:timing}](KDE_MAF_timing.pdf)
+![Computation cost for $M = 1000$ evaluations of the density estimate from data of size $N$ using KDE with `scikit-learn` and that using MAF with `denmarf` respectively. We can see that the evaluation cost using KDE scales with $N$ while that using MAF is independent of $N$. \label{fig:timing}](KDE_MAF_timing.pdf)
 
 While it is relatively straightforward to implement a routine to perform density estimation using MAF with the help of deep learning libraries such as `TensorFlow` and `PyTorch`,
 the technical hurdle of leveraging MAF for people outside of the machine learning community that are not well-versed in those 
