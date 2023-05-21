@@ -45,12 +45,11 @@ However with MAF, an evaluation of the estimated density is independent of $N$. 
 \end{equation}
 where $|J_{T}|$ is the Jacobian determinant of the mapping, and note that there is no summation over the $N$ input data.
 
-<!---
-While it is relatively straightforward to implement these with the help of deep learning libraries such as `PyTorch`, 
-the technical hurdles of leveraging these cutting-edge methods for people outside of the machine learning community that are not well-versed in those 
-libraries remain high. The `denmarf` package is designed to lower the technical barrier and enable researchers to apply masked autoregressive flow 
+While it is relatively straightforward to implement a routine to perform density estimation using MAF with the help of deep learning libraries such as `TensorFlow` and `PyTorch`,
+the technical hurdle of leveraging MAF for people outside of the machine learning community that are not well-versed in those 
+libraries remains high. The `denmarf` package is designed to lower the technical barrier and enable researchers to apply MAF
 for density estimation in their researches seamlessly by providing a `scikit-learn`-like interface.
--->
+
 
 # Acknowledgements
 
