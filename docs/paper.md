@@ -46,11 +46,11 @@ However with MAF, an evaluation of the estimated density is independent of $N$. 
 where $|J_{T}|$ is the Jacobian determinant of the mapping, and note that there is no summation over the $N$ input data. \autoref{fig:timing} shows the computational cost for $M = 1000$ evaluations of the density estimate from data of size $N$ using KDE and that using MAF respectively. 
 We can see that the evaluation cost using KDE scales with $N$ while that using MAF is indeed independent of $N$.
 
-![Computation cost for $M = 1000$ evaluations of the density estimate from data of size $N$ using KDE with `scikit-learn` and that using MAF with `denmarf` respectively. We can see that the evaluation cost using KDE scales with $N$ while that using MAF is independent of $N$. \label{fig:timing}](KDE_MAF_timing.pdf)
+![Computation cost for $M = 1000$ evaluations of the density estimate from data of size $N$ using KDE with `scikit-learn` and that using MAF with `denmarf` respectively. We can see that the evaluation cost using KDE scales with $N$ while that using MAF is independent of $N$. \label{fig:timing}](KDE_MAF_timing.pdf){ width=80% }
 
-While it is relatively straightforward to implement a routine to perform density estimation using MAF with the help of deep learning libraries such as `TensorFlow` and `PyTorch`,
-the technical hurdle of leveraging MAF for people outside of the machine learning community that are not well-versed in those 
-libraries remains high. The `denmarf` package is designed to lower the technical barrier and enable researchers to apply MAF
+While it is relatively straightforward to implement a routine to perform density estimation using MAF with the help of deep learning libraries such as `TensorFlow` [@tensorflow2015-whitepaper] and `PyTorch` [@paszke2017automatic],
+the technical hurdle of leveraging MAF for people not well-versed in those libraries remains high. 
+The `denmarf` package is designed to lower the technical barrier and enable researchers to apply MAF
 for density estimation in their researches seamlessly by providing a `scikit-learn`-like interface.
 
 
