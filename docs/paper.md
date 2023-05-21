@@ -37,7 +37,7 @@ The kernel density estimate $\hat{f}_{\rm KDE}$ using those input data is given 
 \end{equation}
 where $K$ is the kernel function that depends on the distance between the evaluation point $\vec{x}$ and the input data point $\vec{x}_{i}$. 
 There are many implementations of KDE in Python, such as `scipy.stats.gaussian_kde` [@2020SciPy-NMeth], `sklearn.neighbors.KernelDensity` [@scikit-learn] and `kalepy` [@Kelley2021].
-The cost of $M$ such evaluations using \autoref{eq:KDE} is therefore $O(MND)$. This can be slow if we need to evaluate the KDE of a large data set (i.e. large $N$) many times (i.e. large $M$). Give an example here if word limit permits.
+The cost of $M$ such evaluations using \autoref{eq:KDE} is therefore $O(MND)$. This can be slow if we need to evaluate the KDE of a large data set (i.e. large $N$) many times (i.e. large $M$). For instance, one might wish to evaluate the probability density, estimated from a large number ($N \sim 10^7$) of simulated lensed astronomical objects, of two lensed images having certain magnifications over a set of possible $M \sim 10^5$ values.
 
 However with MAF, an evaluation of the estimated density is independent of $N$. Suppose $T(\vec{x})$ maps the target distribution $f(\vec{x})$ into the base distribution $u$, usually chosen as a $D$-dimensional standard normal distribution, then the density estimate using MAF $\hat{f}_{\rm MAF}$ is given by
 \begin{equation}
@@ -60,6 +60,6 @@ New samples $\vec{x}_{i}$ can be generated from the approximated distribution by
 Indeed, if the transformations are bijective (i.e. both surjective and injective) then we can always find $\vec{x}_{i}$ such that $\vec{y}_{i} = T(\vec{x}_{i})$. This could potentially be a problem for input data $\vec{x}_{i}$ that are bounded, since in MAF $T$ is only rescaling and shifting (i.e. an affine transformation) and $u$ is usually a normal distribution which is unbounded. To solve this problem, `denmarf` will logit-transform the input data first if the underlying distribution should be bounded, and the logit-transformed data become unbounded. `denmarf` will automatically include the extra Jacobian from the logit transformation during density evaluations and perform inverse logit transformation after sample regenerations.
 
 # Acknowledgements
-The author would like to acknowledge support from National Science Foundation Awards No. PHY-1912594 and No. PHY-2207758. The author is also grateful for computational resources provided by the LIGO Laboratory and supported by NSF Grants No. PHY-0757058 and No. PHY-0823459. The current version of `denmarf` uses `pytorch-flows` as the backbone \autoref{ikostrikov}. 
+The author would like to acknowledge support from National Science Foundation Awards No. PHY-1912594 and No. PHY-2207758. The author is also grateful for computational resources provided by the LIGO Laboratory and supported by NSF Grants No. PHY-0757058 and No. PHY-0823459. The current version of `denmarf` uses `pytorch-flows` as the backbone [@ikostrikov].
 
 # References
