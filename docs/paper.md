@@ -37,7 +37,7 @@ The kernel density estimate $\hat{f}_{\rm KDE}$ using those input data is given 
 \end{equation}
 where $K$ is the kernel function that depends on the distance between the evaluation point $\vec{x}$ and the input data point $\vec{x}_{i}$. 
 There are many implementations of KDE in Python, such as `scipy.stats.gaussian_kde` [@2020SciPy-NMeth], `sklearn.neighbors.KernelDensity` [@scikit-learn] and `kalepy` [@Kelley2021].
-The cost of $M$ such evaluations using \autoref{eq:KDE} is therefore $O(MND)$. This can be slow if we need to evaluate the KDE of a large data set (i.e. large $N$) many times (i.e. large $M$). For instance, one might wish to evaluate the probability density, estimated from a large number ($N \sim 10^7$) of simulated lensed astronomical objects, of two lensed images having certain magnifications over a set of possible $M \sim 10^5$ values.
+The cost of $M$ such evaluations using \autoref{eq:KDE} is therefore $O(MND)$. This can be slow if we need to evaluate the KDE of a large data set (i.e. large $N$) many times (i.e. large $M$). For instance, one might wish to evaluate the probability density, estimated from a large number ($N \sim 10^7$) of simulated lensed astronomical objects, of two lensed images of a background object having certain magnifications over a set of possible ($M \sim 10^5$) values.
 
 However with MAF, an evaluation of the estimated density is independent of $N$. Suppose $T(\vec{x})$ maps the target distribution $f(\vec{x})$ into the base distribution $u$, usually chosen as a $D$-dimensional standard normal distribution, then the density estimate using MAF $\hat{f}_{\rm MAF}$ is given by
 \begin{equation}
