@@ -53,6 +53,11 @@ the technical hurdle of leveraging MAF for people not well-versed in those libra
 The `denmarf` package is designed to be an almost drop-in replacement of the `sklearn.neighbors.KernelDensity` module 
 to lower the technical barrier and enable researchers to apply MAF for density estimation effortlessly.
 
+New samples $\vec{x}_{i}$ can be generated from the approximated distribution by first drawing samples $\vec{y}_{i}$ from the base distribution $u(\vec{y})$ and then transforming them with the inverse mapping $T^{-1}$, i.e.
+\begin{equation}
+  \vec{x}_{i} = T^{-1}(\vec{y}_{i}).
+\end{equation}
+
 # Acknowledgements
 
 # References
