@@ -24,7 +24,8 @@ Masked autoregressive flow (MAF) [@NIPS2017_6c1da886] is a state-of-the-art non-
 It is based on the idea (known as a normalizing flow) that a simple base probability distribution can be mapped into 
 a complicated target distribution that one wishes to approximate, using a sequence of bijective transformations [@cms/1266935020; @https://doi.org/10.1002/cpa.21423]. The `denmarf` package provides a `scikit-learn`-like interface in Python for researchers
 to effortlessly use MAF for density estimation in their applications to evaluate probability densities 
-of the underlying distribution of a set of data and generate new samples from the data, on either a CPU or a GPU. The package also implements logistic transformations to facilitate the fitting of bounded distributions.
+of the underlying distribution of a set of data and generate new samples from the data, on either a CPU or a GPU, as simple as `from denmarf import DensityEstimate; de = DensityEstimate().fit(X)`. 
+The package also implements logistic transformations to facilitate the fitting of bounded distributions.
 
 # Statement of need
 
