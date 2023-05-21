@@ -29,7 +29,7 @@ of the underlying distribution of a set of data and generate new samples from th
 # Statement of need
 
 There are a number of ways to perform density estimation in a non-parametric fashion, one of which is kernel density estimation (KDE). 
-Suppose we have a set of $D-$dimensional data of size $N$, $\left( \vec{x}_{1}, \vec{x}_{2}, \vec{x}_{i}, \dots, \vec{x}_{N} \right)$, i.e. $\vec{x}_{i}$ is a $D$-dimensional vector.
+Suppose we have a set of $D$-dimensional data of size $N$, $\left( \vec{x}_{1}, \vec{x}_{2}, \vec{x}_{i}, \dots, \vec{x}_{N} \right)$, i.e. $\vec{x}_{i}$ is a $D$-dimensional vector.
 
 <!---
 While it is relatively straightforward to implement these with the help of deep learning libraries such as `PyTorch`, 
