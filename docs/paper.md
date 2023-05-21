@@ -57,7 +57,7 @@ New samples $\vec{x}_{i}$ can be generated from the approximated distribution by
 \begin{equation}
   \vec{x}_{i} = T^{-1}(\vec{y}_{i}).
 \end{equation}
-Indeed, if the transformations are bijective (i.e. both surjective and injective) then we can always find $\vec{x}_{i}$ such that $\vec{y}_{i} = T(\vec{x}_{i})$. This could potentially be a problem for input data $\vec{x}_{i}$ that are bounded, since in MAF $T$ is only rescaling and shifting (i.e. an affine transformation) and $u$ is usually a normal distribution which is unbounded. To solve this problem, `denmarf` will logit-transform the input data first if the underlying distribution should be bounded, and the logit-transformed data become unbounded. `denmarf` will automatically include the extra Jacobian from the logit transformation during density evaluations and perform inverse logit transformation sample regenerations.
+Indeed, if the transformations are bijective (i.e. both surjective and injective) then we can always find $\vec{x}_{i}$ such that $\vec{y}_{i} = T(\vec{x}_{i})$. This could potentially be a problem for input data $\vec{x}_{i}$ that are bounded, since in MAF $T$ is only rescaling and shifting (i.e. an affine transformation) and $u$ is usually a normal distribution which is unbounded. To solve this problem, `denmarf` will logit-transform the input data first if the underlying distribution should be bounded, and the logit-transformed data become unbounded. `denmarf` will automatically include the extra Jacobian from the logit transformation during density evaluations and perform inverse logit transformation after sample regenerations.
 
 # Acknowledgements
 
