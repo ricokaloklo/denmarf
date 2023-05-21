@@ -39,11 +39,11 @@ where $K$ is the kernel function that depends on the distance between the evalua
 The cost of $M$ such evaluations (using a naive implementation of Eq. \autoref{eq:KDE}) is therefore $O(MND)$. This can be slow if we need to evaluate the KDE 
 of a large data set (i.e. large $N$) many times (i.e. large $M$). Give an example here if word limit permits.
 
-However with MAF, a faster evaluation can be achieved. Suppose $T(\vec{x})$ maps the target distribution $f(\vec{x})$ into the base distribution $u(T(\vec{x})$, usually chosen as a $D$-dimensional standard Gaussian distribution, then the density estimate using MAF $\hat{f}_{\rm MAF}$ is given by
+However with MAF, an evaluation of the estimated density is independent of $N$. Suppose $T(\vec{x})$ maps the target distribution $f(\vec{x})$ into the base distribution $u$, usually chosen as a $D$-dimensional standard normal distribution, then the density estimate using MAF $\hat{f}_{\rm MAF}$ is given by
 \begin{equation}
   \hat{f}_{\rm MAF}(\vec{x}) = u(T(\vec{x}))|J_{T}(\vec{x})|,
 \end{equation}
-where $|J_{T}|$ is the Jacobian determinant of the mapping.
+where $|J_{T}|$ is the Jacobian determinant of the mapping, and note that there is no summation over the $N$ input data.
 
 <!---
 While it is relatively straightforward to implement these with the help of deep learning libraries such as `PyTorch`, 
