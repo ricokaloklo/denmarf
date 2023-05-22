@@ -19,4 +19,5 @@ Welcome to denmarf's documentation!
    Installation <installation>
    Usage <usage>
    Advanced Usage <advanced_usage>
+   Examples <examples>
    Full API <modules>
