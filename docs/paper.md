@@ -31,7 +31,7 @@ The package also implements logistic transformations to facilitate the fitting o
 
 There are a number of ways to perform density estimation in a non-parametric fashion, one of which is kernel density estimation (KDE). 
 Suppose we have a set of $D$-dimensional data of size $N$, $\left( \vec{x}_{1}, \vec{x}_{2}, \dots, \vec{x}_{N} \right)$, i.e. $\vec{x}_{i}$ is a $D$-dimensional vector where $i \in \left[ 1, N \right]$ that follows the probability distribution $f(\vec{x})$ we wish to approximate. 
-The kernel density estimate $\hat{f}_{\rm KDE}$ using those input data is given by 
+The kernel density estimate $\hat{f}_{\rm KDE}$ using those input data is given by [@scott1992multivariate]
 \begin{equation}
 \label{eq:KDE}
   \hat{f}_{\rm KDE}(\vec{x}) = \dfrac{1}{N} \sum_{i=1}^{N} K(\vec{x} - \vec{x}_{i}),
