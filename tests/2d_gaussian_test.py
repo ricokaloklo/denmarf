@@ -3,6 +3,7 @@ import unittest
 # For generating the test dataset
 import numpy as np
 from scipy.stats import multivariate_normal
+np.random.seed(1234)
 
 from denmarf import DensityEstimate
 
