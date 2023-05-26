@@ -90,6 +90,7 @@ class DensityEstimate():
     def fit(
         self,
         X,
+        weights=None,
         bounded=None,
         lower_bounds=None,
         upper_bounds=None,
@@ -109,6 +110,8 @@ class DensityEstimate():
         ----------
         X : numpy.ndarray
             Training samples.
+        weights : numpy.array, optional
+            Weights of the training samples. If not specified, all samples are equal weighted.
         bounded : bool, optional
             Whether the distribution is bounded. If True, the distribution will be transformed to the unbounded space
             using logistic transformation.
@@ -156,6 +159,13 @@ class DensityEstimate():
 
             X = self.transformation.logit_transform(X)
 
+        # Check if weights is provided, otherwise assume samples have equal weights
+        if weights is None:
+            weights = np.ones(X.shape[0])
+        else:
+            weights = np.asarray(weights)
+            assert len(weights) == X.shape[0], "weights must be specified for all samples"
+
         num_features = X.shape[1]
         assert num_features > 1, "MADE does not work for 1D case"
 
@@ -165,11 +175,24 @@ class DensityEstimate():
         N_validate = int(X.shape[0]) - (N_train+N_test)
 
         X = data.TensorDataset(torch.from_numpy(X.astype(np.float32)))
-        train_dataset, validate_dataset, test_dataset = data.random_split(X, (N_train, N_validate, N_test))
+        weights = data.TensorDataset(torch.from_numpy(weights.astype(np.float32)))
 
-        train_dataloader = data.DataLoader(train_dataset, batch_size=batch_size, shuffle=False)
-        validate_dataloader = data.DataLoader(validate_dataset, batch_size=batch_size, shuffle=False)
-        test_dataloader = data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
+        train_idx, validate_idx, test_idx = data.random_split(
+            np.arange(X.shape[0]),
+            (N_train, N_validate, N_test)
+        )
+
+        # Training dataset and weights
+        train_dataloader = data.DataLoader(X[train_idx], batch_size=batch_size, shuffle=False)
+        train_weightloader = data.DataLoader(weights[train_idx], batch_size=batch_size, shuffle=False)
+        
+        # Validating dataset and weights
+        validate_dataloader = data.DataLoader(X[validate_idx], batch_size=batch_size, shuffle=False)
+        validate_weightloader = data.DataLoader(weights[validate_idx], batch_size=batch_size, shuffle=False)
+
+        # Testing dataset and weights
+        test_dataloader = data.DataLoader(X[test_idx], batch_size=batch_size, shuffle=False)
+        test_weightloader = data.DataLoader(weights[test_idx], batch_size=batch_size, shuffle=False)
 
         self.num_features = num_features
         self.num_blocks = num_blocks
@@ -190,7 +213,7 @@ class DensityEstimate():
             model.train()
             train_loss = 0
 
-            for batch_idx, data in enumerate(train_dataloader):
+            for data, weight in zip(train_dataloader, train_weightloader):
                 if isinstance(data, list):
                     if len(data) > 1:
                         cond_data = data[1].float()
@@ -200,8 +223,12 @@ class DensityEstimate():
 
                     data = data[0]
                 data = data.to(self.device)
+                weight = weight.to(self.device)
+                # Normalize the weight
+                weight /= weight.sum()
+
                 optimizer.zero_grad()
-                loss = -model.log_probs(data, cond_data).mean()
+                loss = -model.log_probs(data, cond_data)*weight
                 train_loss += loss.item()
                 loss.backward()
                 optimizer.step()
@@ -217,11 +244,11 @@ class DensityEstimate():
                 if isinstance(module, fnn.BatchNormFlow):
                     module.momentum = 1
         
-        def validate(epoch, model, loader):
+        def validate(epoch, model, dataloader, weightloader):
             model.eval()
             val_loss = 0
 
-            for batch_idx, data in enumerate(loader):
+            for data, weight in zip(dataloader, weightloader):
                 if isinstance(data, list):
                     if len(data) > 1:
                         cond_data = data[1].float()
@@ -231,10 +258,11 @@ class DensityEstimate():
 
                     data = data[0]
                 data = data.to(self.device)
+                weight = weight.to(self.device)
                 with torch.no_grad():
-                    val_loss += -model.log_probs(data, cond_data).sum().item()  # sum up batch loss
+                    val_loss += (-model.log_probs(data, cond_data)*weight).sum().item()  # sum up batch loss
 
-            return val_loss / len(loader.dataset)        
+            return val_loss       
 
         # Start training the network
         best_validation_loss = float('inf')
@@ -245,7 +273,7 @@ class DensityEstimate():
             pbar = tqdm.tqdm(total=num_epochs)
         for epoch in range(num_epochs):
             train(epoch)
-            validation_loss = validate(epoch, model, validate_dataloader)
+            validation_loss = validate(epoch, model, validate_dataloader, validate_weightloader)
 
             if verbose:
                 pbar.update()
@@ -256,7 +284,7 @@ class DensityEstimate():
                 best_validation_loss = validation_loss
                 best_model = copy.deepcopy(model)
 
-        best_validation_loss = validate(best_validation_epoch, best_model, test_dataloader)
+        best_validation_loss = validate(best_validation_epoch, best_model, test_dataloader, test_weightloader)
         if verbose:
             print("best average log likelihood: {:.3f}".format(-best_validation_loss))
         self.model = best_model
