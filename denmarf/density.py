@@ -174,13 +174,13 @@ class DensityEstimate():
         N_test = int(X.shape[0]*p_test)
         N_validate = int(X.shape[0]) - (N_train+N_test)
 
-        X = data.TensorDataset(torch.from_numpy(X.astype(np.float32)))
-        weights = data.TensorDataset(torch.from_numpy(weights.astype(np.float32)))
-
         train_idx, validate_idx, test_idx = data.random_split(
             np.arange(X.shape[0]),
             (N_train, N_validate, N_test)
         )
+
+        X = data.TensorDataset(torch.from_numpy(X.astype(np.float32)))
+        weights = data.TensorDataset(torch.from_numpy(weights.astype(np.float32)))
 
         # Training dataset and weights
         train_dataloader = data.DataLoader(X[train_idx], batch_size=batch_size, shuffle=False)
