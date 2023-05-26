@@ -174,42 +174,40 @@ class DensityEstimate():
         N_test = int(X.shape[0]*p_test)
         N_validate = int(X.shape[0]) - (N_train+N_test)
 
-        train_idx, validate_idx, test_idx = data.random_split(
-            np.arange(X.shape[0]),
-            (N_train, N_validate, N_test)
-        )
+        X = data.TensorDataset(torch.from_numpy(X.astype(np.float32)))
+        train_dataset, validate_dataset, test_dataset = data.random_split(X, (N_train, N_validate, N_test))
 
         # Training dataset and weights
         train_dataloader = data.DataLoader(
-            data.TensorDataset(torch.from_numpy(X[train_idx].astype(np.float32))),
+            train_dataset,
             batch_size=batch_size,
             shuffle=False
         )
         train_weightloader = data.DataLoader(
-            data.TensorDataset(torch.from_numpy(weights[train_idx]/(weights[train_idx].sum()).astype(np.float32))),
+            data.TensorDataset(torch.from_numpy(weights[train_dataset.indices]/(weights[train_dataset.indices].sum()).astype(np.float32))),
             batch_size=batch_size,
             shuffle=False
         )
         
         # Validating dataset and weights
         validate_dataloader = data.DataLoader(
-            data.TensorDataset(torch.from_numpy(X[validate_idx].astype(np.float32))),
+            validate_dataset,
             batch_size=batch_size,
             shuffle=False
         )
         validate_weightloader = data.DataLoader(
-            data.TensorDataset(torch.from_numpy(weights[validate_idx]/(weights[validate_idx].sum()).astype(np.float32))),
+            data.TensorDataset(torch.from_numpy(weights[validate_dataset.indices]/(weights[validate_dataset.indices].sum()).astype(np.float32))),
             batch_size=batch_size,
             shuffle=False
         )
         # Testing dataset and weights
         test_dataloader = data.DataLoader(
-            data.TensorDataset(torch.from_numpy(X[test_idx].astype(np.float32))),
+            test_dataset,
             batch_size=batch_size,
             shuffle=False
         )
         test_weightloader = data.DataLoader(
-            data.TensorDataset(torch.from_numpy(weights[test_idx]/(weights[test_idx].sum()).astype(np.float32))),
+            data.TensorDataset(torch.from_numpy(weights[test_dataset.indices]/(weights[test_dataset.indices].sum()).astype(np.float32))),
             batch_size=batch_size,
             shuffle=False
         )
@@ -256,7 +254,7 @@ class DensityEstimate():
                     module.momentum = 0
 
             with torch.no_grad():
-                model(train_dataloader.dataset.tensors[0].to(data.device))
+                model(train_dataloader.dataset.dataset.tensors[0].to(data.device))
 
             for module in model.modules():
                 if isinstance(module, fnn.BatchNormFlow):
