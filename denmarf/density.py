@@ -387,3 +387,43 @@ class DensityEstimate():
             generated_samples = np.where(generated_samples == -np.inf, self.transformation.lower_bounds, generated_samples)
 
         return generated_samples
+
+    def log_jacobian(self, X):
+        """Compute the log jacobian for a set of samples
+        
+        Parameters
+        ----------
+        X : array-like, shape (n_samples, n_features)
+            Samples to compute the log jacobian for.
+            
+        Returns
+        -------
+        array-like, shape (n_samples,)
+            The array of log_jacobian values for each sample
+        """
+        # Boilerplate from score_samples
+        assert len(X.shape) == 2, "X must be of shape (n_samples, n_features)"
+        log_jacob = np.zeros(X.shape[0])
+        X = X.astype(np.float32)
+
+        if self.bounded:
+            # Check if X is within the bounds
+            valid_indices_lower_bounds = np.less_equal(
+                self.transformation.lower_bounds,
+                X
+            ).all(axis=1)
+            valid_indices_upper_bounds = np.less(
+                X,
+                self.transformation.upper_bounds,
+            ).all(axis=1)
+            log_jacob = np.where(valid_indices_lower_bounds & valid_indices_upper_bounds, logpdf, -np.inf)
+            # First compute the log jacobian from logit transformation
+            log_jacob += self.transformation.log_jacobian(X)
+            # Then perform the transformation
+            X = self.transformation.logit_transform(X)
+
+        X_torch = torch.from_numpy(X).to(self.device)
+        _, model_log_jacob = self.model(X_torch).detach().cpu().numpy()
+        log_jacob += model_log_jacob
+
+        return log_jacob
