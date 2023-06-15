@@ -416,14 +416,15 @@ class DensityEstimate():
                 X,
                 self.transformation.upper_bounds,
             ).all(axis=1)
-            log_jacob = np.where(valid_indices_lower_bounds & valid_indices_upper_bounds, logpdf, -np.inf)
+            log_jacob = np.where(valid_indices_lower_bounds & valid_indices_upper_bounds, log_jacob, -np.inf)
             # First compute the log jacobian from logit transformation
             log_jacob += self.transformation.log_jacobian(X)
             # Then perform the transformation
             X = self.transformation.logit_transform(X)
 
         X_torch = torch.from_numpy(X).to(self.device)
-        _, model_log_jacob = self.model(X_torch).detach().cpu().numpy()
+        _, model_log_jacob = self.model(X_torch)
+        model_log_jacob = torch.squeeze(model_log_jacob).detach().cpu().numpy()
         log_jacob += model_log_jacob
 
         return log_jacob
